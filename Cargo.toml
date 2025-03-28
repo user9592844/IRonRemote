@@ -1,0 +1,20 @@
+[package]
+name = "IRonRemote"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+riscv-rt = "0.14.0"
+embedded-hal = "1.0.0"
+bl602-hal = { git = "https://github.com/sipeed/bl602-hal" }
+panic-halt = "1.0.0"
+riscv = { version = "0.13.0", features = ["critical-section-single-hart"] }
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+debug = true
+lto = "thin"
+
+[lints.clippy]
+all = { level = "deny", priority = -1 }

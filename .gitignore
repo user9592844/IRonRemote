@@ -1,0 +1,10 @@
+# Ignore direnv dotfiles
+.direnv
+
+# Ignore build products
+/target
+/result
+firmware.bin
+
+# Ignore pycach (created by linker script)
+__pycache__
