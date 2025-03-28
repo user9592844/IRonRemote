@@ -1,0 +1,36 @@
+:name: bl602
+:description:
+
+$name?="bl602"
+
+using sysbus
+mach create $name
+
+EnsureTypeIsLoaded "Antmicro.Renode.Peripherals.IRQControllers.CoreLocalInterruptController"
+EnsureTypeIsLoaded "Antmicro.Renode.Peripherals.IRQControllers.CoreLevelInterruptor"
+EnsureTypeIsLoaded "Antmicro.Renode.Peripherals.UART.SiFive_UART"
+
+machine LoadPlatformDescription @bl602.repl
+
+showAnalyzer uart0
+showAnalyzer uart1
+
+sysbus LoadBinary @./images/flash.bin 0x23000000
+sysbus LoadBinary @./images/rom.bin 0x21000000
+
+cpu PerformanceInMips 160
+
+:sysbus.cpu LogfunctionNames true
+
+sysbus LogAllPeripheralsAccess true
+sysbus LogPeripheralAccess clint false
+sysbus LogPeripheralAccess uart0 false
+logLevel 3 sysbus.uart0
+logLevel -1 sysbus.clic
+:logLevel -1 sysbus.clint
+:logLevel -1 sysbus.cpu
+sysbus LogPeripheralAccess sysbus.clic true
+
+:machine StartGdbServer 3333
+start
+:pause

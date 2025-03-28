@@ -1,0 +1,6 @@
+# Ignore direnv dotfiles
+.direnv
+
+# Ignore build products
+/target
+/result

@@ -1,0 +1,106 @@
+cpu: CPU.RiscV32 @ sysbus
+    cpuType: "rv32imafc"
+    timeProvider: clint
+
+clic: IRQControllers.CoreLocalInterruptController @ sysbus <0x02800000, +0x7FFFFF>
+    cpu: cpu
+    numberOfInterrupts: 64
+
+clint: IRQControllers.CoreLevelInterruptor @ sysbus 0x02000000
+    [0,1] -> cpu@[3,7]
+    frequency: 40000000 // BL602 Schematic shows XOUT/XIN 40MHz-12PF+/-10PPM-3225
+
+wram: Memory.MappedMemory @ sysbus 0x42030000
+    size: 0x1C000
+
+retram: Memory.MappedMemory @ sysbus 0x40010000
+    size: 0x01000
+
+hbn: Memory.MappedMemory @ sysbus 0x4000F000
+    size: 0x01000
+
+pds: Memory.MappedMemory @ sysbus 0x4000E000
+    size: 0x01000
+
+sdu: Memory.MappedMemory @ sysbus 0x4000D000
+    size: 0x01000
+
+dma: Memory.MappedMemory @ sysbus 0x4000C000
+    size: 0x01000
+
+qspi: Memory.MappedMemory @ sysbus 0x4000B000
+    size: 0x01000
+
+// TODO (user9592844): Fix page size offset limitation
+//irr: Memory.MappedMemory @ sysbus 0x4000A600
+//    size: 0x00100
+//
+//timer: Memory.MappedMemory @ sysbus 0x4000A500
+//    size: 0x00100
+//
+//pwm: Memory.MappedMemory @ sysbus 0x4000A400
+//    size: 0x00100
+//
+//i2c: Memory.MappedMemory @ sysbus 0x4000A300
+//    size: 0x00100
+//
+//spi: Memory.MappedMemory @ sysbus 0x4000A200
+//    size: 0x00100
+
+uart1: UART.SiFive_UART @ sysbus 0x4000A100
+    IRQ -> clic@32
+
+uart0: UART.SiFive_UART @ sysbus 0x4000A000
+    IRQ -> clic@45
+
+l1c: Memory.MappedMemory @ sysbus 0x40009000
+    size: 0x01000
+
+efuse: Memory.MappedMemory @ sysbus 0x40007000
+    size: 0x01000
+
+tz2: Memory.MappedMemory @ sysbus 0x40006000
+    size: 0x01000
+
+tz1: Memory.MappedMemory @ sysbus 0x40005000
+    size: 0x01000
+
+sec: Memory.MappedMemory @ sysbus 0x40004000
+    size: 0x01000
+
+gpip: Memory.MappedMemory @ sysbus 0x40003000
+    size: 0x01000
+
+mix: Memory.MappedMemory @ sysbus 0x40002000
+    size: 0x01000
+
+glb: Memory.MappedMemory @ sysbus 0x40001000
+    size: 0x01000
+
+pram: Memory.MappedMemory @ sysbus 0x2202000
+    size: 0x10000
+
+dram: Memory.MappedMemory @ sysbus 0x42020000
+    size: 0x10000
+
+xip: Memory.MappedMemory @ sysbus 0x23000000
+    size: 0x1000000
+
+ptcm1: Memory.MappedMemory @ sysbus 0x22014000
+    size: 0xC000
+
+dtcm1: Memory.MappedMemory @ sysbus 0x42014000
+    size: 0xC000
+
+ptcm0: Memory.MappedMemory @ sysbus 0x22008000
+    size: 0xC000
+
+dtcm0: Memory.MappedMemory @ sysbus 0x42008000
+    size: 0xC000
+
+rom: Memory.MappedMemory @ sysbus 0x21000000
+    size: 0x1C000
+
+sysbus:
+    init:
+        ApplySVD @https://raw.githubusercontent.com/bouffalolab/bl_iot_sdk/master/components/platform/soc/bl602/bl602_std/bl602_std/Device/Bouffalo/BL602/Peripherals/soc602_reg.svd
